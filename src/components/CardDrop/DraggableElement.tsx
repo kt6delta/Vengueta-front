@@ -34,7 +34,7 @@ export const DraggableElement: FC<Props> = ({
           mesage="DISPONIBLES"
         />
 
-        <div className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
+        <div className="bg-[#FAFAFA] p-3 md:p-5 lg:p-7 rounded-default border-2 border-[rgba(0, 53, 61, 0.4)] shadow-button">
           <Droppable droppableId={DropID1}>
             {(droppableProvided, droppableSnapshot) => (
               <div
@@ -61,9 +61,9 @@ export const DraggableElement: FC<Props> = ({
       <div>
         <Title
           className="text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
-          mesage="AGREDOS"
+          mesage="RECURSOS"
         />
-        <div className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
+        <div className="bg-[#FAFAFA] p-3 md:p-5 lg:p-7 rounded-default border-2 border-[rgba(0, 53, 61, 0.4)] shadow-button">
           <Droppable droppableId={DropID2}>
             {(droppableProvided, droppableSnapshot) => (
               <div

@@ -4,43 +4,39 @@ import { DragList } from "@/components/CardDrop/DragList";
 import { Title } from "@/components/reusable/title";
 import { IoSearch } from "react-icons/io5";
 import { CardWrapper } from "@/components/reusable/CardWrapper";
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-} from "@nextui-org/react";
-import { paises, masajista } from "@/utils/constantes/data";
-import { useRouter } from "next/navigation";
+import { Button, Input } from "@nextui-org/react";
+import { TipoEtapas } from "@/components/reusable/admin/TipoEtapas";
+import { IoMdAddCircle } from "react-icons/io";
+import { FaMinusCircle } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
 
-const CreacionEquipo = () => {
-  const router = useRouter();
+export default function Carrera() {
   const [search, setSearch] = useState("");
-  const [formData, setFormData] = useState({
-    nacionalidad: "",
-    nombre: "",
-    masajista: "",
-  });
+  const router = useRouter();
 
-  function handleChange(e: any): void {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+  const AddHandle = (e: any) => {
+    router.push("/director/creacionEquipo");
+  };
+  const MinusHandle = (e: any) => { };
 
+  const [NumEtapas, setNumEtapas] = useState(1);
+  const MinusEtapaHandle = (e: any) => {
+    setNumEtapas(NumEtapas - 1);
+  };
+  const AddEtapaHandle = (e: any) => {
+    setNumEtapas(NumEtapas + 1);
+  };
   return (
     <>
       <div className="flex flex-col gap-5 mb-5">
-        <Title className="text-center" mesage="CREACION DE EQUIPO" />
+        <Title className="text-center" mesage="CREACION DE CARRERA" />
         <div className="grid grid-cols-2 gap-5">
-          <Title className="" mesage="CICLISTAS" />
+          <Title className="" mesage="EQUIPOS" />
           <div className="flex justify-end items-center">
             <Input
-              className="border-1 border-content1 rounded-default w-1/2"
+              className="border-1 border-secondary rounded-default w-1/2"
               type="text"
-              placeholder="ciclista1"
+              placeholder="equipo1"
               radius="full"
               labelPlacement="outside"
               value={search}
@@ -50,111 +46,58 @@ const CreacionEquipo = () => {
           </div>
         </div>
       </div>
-      <div className="grid gap-x-5 gap-y-5  md:gap-x-10 lg:gap-x-14 grid-cols-2 lg:grid-cols-3 rounded-default min-w-[400px]">
+      <CardWrapper className="bg-slate-300 p-10">
+        <div className="grid gap-x-5 gap-y-5  md:gap-x-10 lg:gap-x-14 grid-cols-2 rounded-default min-w-[400px]">
         <DragList />
-        <div className="col-span-2 lg:col-span-1 ">
-          <div className="flex flex-col md:block">
-            <Title
-              className="text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
-              mesage="DATOS EQUIPO"
-            />
-            <CardWrapper className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
-              <div className="grid grid-cols-1 gap-2">
-                <Input
-                  isRequired={true}
-                  type="text"
-                  variant="underlined"
-                  label="Nombre"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  placeholder="Los Best"
-                  classNames={{
-                    base: "font-bold",
-                  }}
-                />
-                <Autocomplete
-                  isRequired={true}
-                  label="Nacionalidad"
-                  color="secondary"
-                  variant="underlined"
-                  size="md"
-                  radius="md"
-                  placeholder="Seleccione un Nacionalidad"
-                  defaultItems={paises}
-                  defaultSelectedKey={formData.nacionalidad}
-                  onSelectionChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nacionalidad: value as string,
-                    }))
-                  }
-                  classNames={{
-                    base: "font-bold",
-                  }}
-                >
-                  {paises.map((option) => (
-                    <AutocompleteItem
-                      key={option.value}
-                      value={option.label}
-                      classNames={{
-                        selectedIcon: "text-secondary",
-                      }}
-                    >
-                      {option.label}
-                    </AutocompleteItem>
+          <div className="flex justify-end items-start gap-5">
+            <button onClick={AddHandle}>
+              <IoMdAddCircle className="w-10 h-10" />
+            </button>
+            <button onClick={MinusHandle}>
+              <FaMinusCircle className="w-[32px] h-[32px]" />
+            </button>
+          </div>
+          <div className="col-span-2">
+            <div className="flex flex-col md:block">
+              <Title
+                className="text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
+                mesage="ETAPAS"
+              />
+              <CardWrapper className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-secondary shadow-button">
+                <div className="grid grid-cols-1 gap-2">
+
+                  {Array.from({ length: NumEtapas }).map((_, index) => (
+                    <TipoEtapas key={index} mesage={`ETAPA ${index + 1}`} />
                   ))}
-                </Autocomplete>
-                <Autocomplete
-                  isRequired={true}
-                  label="Masajista"
-                  color="secondary"
-                  variant="underlined"
-                  size="md"
-                  radius="md"
-                  placeholder="Seleccione un Masajista"
-                  defaultItems={masajista}
-                  defaultSelectedKey={formData.masajista}
-                  onSelectionChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      masajista: value as string,
-                    }))
-                  }
-                  classNames={{
-                    base: "font-bold",
-                  }}
-                >
-                  {masajista.map((option) => (
-                    <AutocompleteItem
-                      key={option.value}
-                      value={option.label}
-                      classNames={{
-                        selectedIcon: "text-secondary",
-                      }}
-                    >
-                      {option.label}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-            </CardWrapper>
+
+                  <div className="flex justify-end gap-5">
+                    <button onClick={AddEtapaHandle}>
+                      <IoMdAddCircle className="w-10 h-10" />
+                    </button>
+                    <button onClick={MinusEtapaHandle}>
+                      <FaMinusCircle className="w-[32px] h-[32px]" />
+                    </button>
+                  </div>
+                </div>
+              </CardWrapper>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col items-center mt-5">
-        <Button
-          color="secondary"
-          variant="solid"
-          type="submit"
-          radius="full"
-          className="w-1/3 min-w-32 mb-2 text-white"
-          onClick={() => router.push("/director")}
-        >
-          Crear
-        </Button>
-      </div>
-    </>
-  );
+        </CardWrapper>
+
+        <div className="flex flex-col items-center mt-5">
+          <Button
+            color="secondary"
+            variant="solid"
+            type="submit"
+            radius="full"
+            className="w-1/4 min-w-32 mb-2 text-white min-h-8"
+            onClick={() => router.push("carrera/simular")}
+          >
+            <p className="text-sm md:text-base lg:text-xl">Crear</p>
+          </Button>
+        </div>
+      </>
+      );
 };
-export default CreacionEquipo;
+

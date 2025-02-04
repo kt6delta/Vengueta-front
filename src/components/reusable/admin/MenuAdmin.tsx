@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Tabs, Tab, Button } from "@nextui-org/react";
-import { IoMdBicycle } from "react-icons/io";
+import { Tabs, Tab, Button, Image } from "@nextui-org/react";
 import { Icon } from '@iconify/react';
 import { useRouter } from "next/navigation";
+import { FaHouseChimney } from "react-icons/fa6";
+import { Title } from "@/components/reusable/title";
 
 export const MenuAdmin = () => {
-  const route= useRouter();
+  const route = useRouter();
   const [isVertical, setIsVertical] = useState(false);
   const [selected, setSelected] = useState('');
   function handleMenu(menu: any) {
@@ -31,8 +32,14 @@ export const MenuAdmin = () => {
   return (
     <>
       <div className="w-full gap-x-2 justify-center flex flex-row md:flex-col md:w-1/4 md:gap-x-5 md:mx-5 md:mt-10 md:justify-start">
-        <div className="justify-center items-center hidden sm:flex">
-          <IoMdBicycle className="w-10 h-10 md:w-20 md:h-20 lg:w-28 lg:h-28 text-[#001731]" />
+        <div className="justify-center items-center hidden sm:flex px-7">
+          <Image
+            src="/Logo-2.png"
+            alt="logo"
+            width={100}
+            height={100}
+            className="rounded-none"
+          /> <Title mesage="Vegeta Proyect" className="text-center"/>
         </div>
         <Tabs
           radius="lg"
@@ -44,20 +51,20 @@ export const MenuAdmin = () => {
           onSelectionChange={handleMenu}
         >
           <Tab
-          id="menu"
+            id="menu"
             className="h-[5vh] justify-start focus:shadow-card"
             key="carrera"
             title={
               <div className="flex items-center gap-2">
                 <div id='icon'>
-                  <Icon icon="vaadin:stopwatch" className="font-black w-5 h-5 md:w-10 md:h-10" />
+                  <FaHouseChimney className="font-black w-5 h-5 md:w-10 md:h-10" />
                 </div>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Carrera</p>
+                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Unidades</p>
               </div>
             }
           ></Tab>
           <Tab
-          id="menu"
+            id="menu"
             key="carrera/infoEquipos"
             className="h-[5vh] justify-start focus:shadow-card"
             title={
@@ -65,20 +72,7 @@ export const MenuAdmin = () => {
                 <div id='icon'>
                   <Icon icon="fluent:people-team-16-filled" className="font-black w-5 h-5 md:w-10 md:h-10" />
                 </div>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Equipos</p>
-              </div>
-            }
-          ></Tab>
-          <Tab
-          id="menu"
-            key="dashBoard"
-            className="h-[5vh] justify-start focus:shadow-card"
-            title={
-              <div className="flex items-center gap-2">
-                <div id='icon'>
-                  <Icon icon="healthicons:high-bars" className="font-black w-5 h-5 md:w-10 md:h-10" />
-                </div>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Estadisticas</p>
+                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Usuarios</p>
               </div>
             }
           ></Tab>
@@ -92,7 +86,7 @@ export const MenuAdmin = () => {
             onClick={exit}
           >
             <div className="flex items-center">
-            <div id='icon'>
+              <div id='icon'>
                 <Icon icon="mdi:location-exit" className="font-black w-5 h-5 md:w-10 md:h-10" />
               </div>
               <p className="ml-2 text-sm sm:text-base md:text-xl lg:text-2xl">Cerrar Sesión</p>

@@ -75,7 +75,6 @@ export const DragList = () => {
   }, [hijosMontados]);
 
   const notificarMontaje = (num: number) => {
-    console.log("montado", num);
     setHijosMontados(num);
   };
 

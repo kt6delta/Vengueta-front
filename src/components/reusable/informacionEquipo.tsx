@@ -2,15 +2,18 @@
 import React, { useState } from "react";
 import { Title } from "@/components/reusable/title";
 import { CardWrapper } from "@/components/reusable/CardWrapper";
+import {CalendarDate} from "@internationalized/date";
 import {
   Autocomplete,
   AutocompleteItem,
   Button,
   Input,
+  DateInput
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { CardUser } from "@/components/reusable/user/cardUser";
-import { paises, masajista } from "@/utils/constantes/data";
+import { horas } from "@/utils/constantes/data";
+import { IoSearch } from "react-icons/io5";
 
 export default function InformacionEquipo() {
   const router = useRouter();
@@ -47,10 +50,11 @@ export default function InformacionEquipo() {
     },
   ];
   const [formData, setFormData] = useState({
-    nacionalidad: "",
-    nombre: "",
-    masajista: "",
+    date: "",
+    timeStart: "",
+    timeEnd: ""
   });
+  const [search, setSearch] = useState("");
 
   function handleChange(e: any): void {
     const { name, value } = e.target;
@@ -62,51 +66,42 @@ export default function InformacionEquipo() {
   return (
     <>
       <div className="flex flex-col gap-5 mb-5">
-        <Title className="text-center" mesage="INFORMACION DEL EQUIPO" />
+        <Title className="text-center" mesage="RECURSOS" />
       </div>
       <div className="grid gap-x-5 gap-y-5 grid-flow-row md:grid-flow-col md:gap-x-10 lg:gap-x-14 rounded-default min-w-[400px]">
         <div className="my-auto">
           <div className="flex flex-col md:block">
             <Title
-              className="text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
-              mesage="EQUIPO"
+              className="mb-5 text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
+              mesage="RESERVAR RECURSO"
             />
             <CardWrapper className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
               <div className="grid grid-cols-1 gap-2">
-                <Input
+                <DateInput
                   isRequired={true}
-                  type="text"
                   variant="underlined"
-                  label="Nombre"
-                  name="nombre"
-                  value={formData.nombre}
+                  label="Fecha de Reserva"
+                  name="date"
+                  value={null}
                   onChange={handleChange}
-                  placeholder="Los Best"
                   classNames={{
                     base: "font-bold",
                   }}
                 />
                 <Autocomplete
                   isRequired={true}
-                  label="Nacionalidad"
+                  label="Hora de Inicio"
                   color="secondary"
                   variant="underlined"
                   size="md"
                   radius="md"
-                  placeholder="Seleccione un Nacionalidad"
-                  defaultItems={paises}
-                  defaultSelectedKey={formData.nacionalidad}
-                  onSelectionChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      nacionalidad: value as string,
-                    }))
-                  }
+                  placeholder="Seleccionar Hora"
+                  onSelectionChange={(value) => handleChange({ target: { name: 'timeStart', value } })}
                   classNames={{
                     base: "font-bold",
                   }}
                 >
-                  {paises.map((option) => (
+                  {horas.map((option) => (
                     <AutocompleteItem
                       key={option.value}
                       value={option.label}
@@ -118,27 +113,21 @@ export default function InformacionEquipo() {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
+
                 <Autocomplete
                   isRequired={true}
-                  label="Masajista"
+                  label="Hora de Finalizacion"
                   color="secondary"
                   variant="underlined"
                   size="md"
                   radius="md"
-                  placeholder="Seleccione un Masajista"
-                  defaultItems={masajista}
-                  defaultSelectedKey={formData.masajista}
-                  onSelectionChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      masajista: value as string,
-                    }))
-                  }
+                  placeholder="Seleccione Hora"
+                  onSelectionChange={(value) => handleChange({ target: { name: 'timeEnd', value } })}
                   classNames={{
                     base: "font-bold",
                   }}
                 >
-                  {masajista.map((option) => (
+                  {horas.map((option) => (
                     <AutocompleteItem
                       key={option.value}
                       value={option.label}
@@ -161,14 +150,20 @@ export default function InformacionEquipo() {
               radius="full"
               className="w-1/3 min-w-32 mb-2 bg-secondary text-white"
             >
-              Editar
+              Reservar
             </Button>
           </div>
         </div>
         <div>
-          <Title
-            className="text-center text-small sm:text-small md:text-small lg:text-xl xl:text-xl"
-            mesage="INTEGRANTES"
+          <Input
+            className="border-1 border-secondary rounded-default w-full mb-5"
+            type="text"
+            placeholder="Recursos"
+            radius="full"
+            labelPlacement="outside"
+            value={search}
+            onValueChange={setSearch}
+            startContent={<IoSearch className="w-6 h-6" />}
           />
           <CardWrapper className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
             <div className="grid grid-cols-1 gap-2">
