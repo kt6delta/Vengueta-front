@@ -77,7 +77,7 @@ export default function Login() {
 						className="object-cover rounded-default"
 						width={"700"}
 						height={"700"}
-						src="/ciclista.jpg"
+						src="/casa3.png"
 						alt="logo"
 						loading="lazy"
 					/>
