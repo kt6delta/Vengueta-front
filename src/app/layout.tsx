@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { NextUIProvider } from "@nextui-org/react";
-const inter = Inter({ subsets: ["latin"] });
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
-  title: "ciclismo",
-  description: "Administracion de ciclismo",
+  title: "vengeta-proyect",
+  description: "Administracion de reservas",
 };
 
 export default function RootLayout({
@@ -16,7 +14,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
-      <body className={`${inter.className}`}>
+      <body className={`font-primary`}>
         <NextUIProvider>
           <main className="h-screen w-full font-primary">
             <ToastContainer

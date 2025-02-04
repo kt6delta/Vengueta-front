@@ -1,13 +1,7 @@
 "use client";
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FooterPage } from '@/components/reusable/user/FooterPage';
-import { Header } from '@/components/reusable/user/Header';
-import { TableList } from '@/components/reusable/table/TableList';
-import { CardUser } from '@/components/reusable/user/cardUser';
-import { Navbar, NavbarContent, NavbarBrand, NavbarItem } from "@nextui-org/react";
+import { Navbar, NavbarContent, NavbarItem } from "@nextui-org/react";
 import Image from 'next/image';
-import { Spacer } from '@nextui-org/react';
 import { cards } from '../components/reusable/carruselCard/data';
 import { etapas } from '../components/reusable/carruselCard/dataEtapas';
 import { Card } from '../components/reusable/carruselCard/Card';

@@ -1,5 +1,5 @@
 import Perfil from "@/components/reusable/user/perfil";
-export default function Director() {
+export default function UsuarioUpdate() {
   return (
     <>
        <Perfil /> 

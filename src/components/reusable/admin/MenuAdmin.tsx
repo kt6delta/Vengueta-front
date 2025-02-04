@@ -12,7 +12,7 @@ export const MenuAdmin = () => {
   const [selected, setSelected] = useState('');
   function handleMenu(menu: any) {
     setSelected(menu);
-    route.push(`/${menu}`);
+    // route.push(`/${menu}`);
   }
 
   function exit(e: any) {
@@ -53,7 +53,7 @@ export const MenuAdmin = () => {
           <Tab
             id="menu"
             className="h-[5vh] justify-start focus:shadow-card"
-            key="carrera"
+            key="unidades"
             title={
               <div className="flex items-center gap-2">
                 <div id='icon'>
@@ -65,7 +65,7 @@ export const MenuAdmin = () => {
           ></Tab>
           <Tab
             id="menu"
-            key="carrera/infoEquipos"
+            key="usuarios"
             className="h-[5vh] justify-start focus:shadow-card"
             title={
               <div className="flex items-center gap-2">

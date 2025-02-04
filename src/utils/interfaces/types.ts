@@ -1,5 +1,4 @@
 import { SVGProps } from "react";
-// Zustand store interfaces
 
 type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
