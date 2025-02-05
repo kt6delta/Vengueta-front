@@ -1,742 +1,223 @@
 "use client";
-import { toast } from "react-toastify";
-import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Avatar, Button, Input } from "@nextui-org/react";
+import { Input, Button } from "@nextui-org/react";
+import React, { FormEvent, useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "react-toastify";
 
-// FormData según Endpoints
-type FormData = {
-  rol: string;
-  email: string;
-  nickname: string;
-  password: string;
-};
-
+//patron estrategia
 interface IForm {
-  handleSubmit(formData: FormData): Promise<boolean>;
+  handleSubmit(formData: any): Promise<string>;
 }
-
-class UsuarioUpdate implements IForm {
-  async handleSubmit(formData: FormData): Promise<boolean> {
-    const { rol, nickname, password, email } = formData;
+class Ciclista implements IForm {
+  async handleSubmit(formData: any): Promise<string> {
+    const { rol, nombre, cedula, sexo, contextura, especialidad, email } =
+      formData;
     try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${nickname}`,
-        { username: nickname, email, rol, password },
-        { headers: { "Content-Type": "application/json" } }
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/crearUsuarioCiclista`,
+        {
+          idusuario: cedula,
+          nombre,
+          email,
+          sexo: sexo.charAt(0),
+          rol_id: rol,
+          especialidad_id: especialidad,
+          contextura,
+        }
       );
-      if (response.status === 200) {
-        toast.success("Usuario actualizado correctamente");
-        return true;
-      } else {
-        toast.error("Error al actualizar el usuario");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error en handleSubmit:", error);
-      toast.error("Error al actualizar el usuario");
-      return false;
+      return response.data.idusuario;
+    } catch {
+      toast.error("Oops! errror en la creacion de usuario");
+      return "";
+    }
+  }
+}
+class Masajista implements IForm {
+  async handleSubmit(formData: any): Promise<string> {
+    const { rol, nombre, cedula, sexo, email, experiencia } = formData;
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/crearUsuarioMasajista`,
+        {
+          idusuario: cedula,
+          nombre,
+          email,
+          sexo: sexo.charAt(0),
+          rol_id: rol,
+          anios_experiencia: experiencia,
+        }
+      );
+      return response.data.idusuario;
+    } catch {
+      toast.error("Oops! errror en la creacion de usuario");
+      return "";
+    }
+  }
+}
+class Director implements IForm {
+  async handleSubmit(formData: any): Promise<string> {
+    const { rol, nombre, cedula, sexo, email, nacionalidad } = formData;
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/crearUsuarioDirector`,
+        {
+          idusuario: cedula,
+          nombre,
+          email,
+          sexo: sexo.charAt(0),
+          rol_id: rol,
+          nacionalidad,
+        }
+      );
+      return response.data.idusuario;
+    } catch {
+      toast.error("Oops! errror en la creacion de usuario");
+      return "";
     }
   }
 }
 
-export default function Perfil() {
+export default function Registro() {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     rol: "",
+    nombre: "",
+    cedula: "",
+    sexo: "",
+    contextura: "",
+    especialidad: "",
     email: "",
-    nickname: "",
-    password: "",
+    experiencia: "",
+    nacionalidad: "",
   });
-
   const [form, setForm] = useState<IForm | null>(null);
-  const [titulo, setTitulo] = useState<string>(""); // Inicialmente cadena vacía
-  const [isReadOnly, setIsReadOnly] = useState(true);
 
   useEffect(() => {
-    const fetchPerfil = async () => {
-      try {
-         //await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Datos simulados pa probar (mock)
-        // const perfilData = {
-        //   rol: "usuario",
-        //   email: "juan@example.com",
-        //   username: "Juan123", // Valor simulado
-        //   password: "fakePassword",
-        // };
-
-        // Obtener el nickname del localStorage (suponiendo que es el id)
-        const userNickname = localStorage.getItem("nickname");
-        if (!userNickname) {
-          console.error("No se encontró el nickname en localStorage");
-          return;
-        }
-
-        // Llamada al backend
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userNickname}`,
-          { headers: { "Content-Type": "application/json" } }
-        );
-        const perfilData = response.data;
-        console.log("Datos recibidos:", perfilData);
-
-        // Actualiza los estados con los datos del backend
-        setFormData({
-          rol: perfilData.rol,
-          email: perfilData.email,
-          nickname: perfilData.username,
-          password: perfilData.password,
-        });
-        setTitulo(perfilData.username || "");
-      } catch (error) {
-        console.error("Error al obtener el perfil:", error);
-      }
-    };
-
-    fetchPerfil();
-    setForm(new UsuarioUpdate());
-  }, []);
-
-  console.log("Render: Título actual:", titulo);
+    // Cambiar la estrategia según el rol
+    switch (formData.rol) {
+      case "1":
+        setForm(new Ciclista());
+        break;
+      case "2":
+        setForm(new Masajista());
+        break;
+      case "3":
+        setForm(new Director());
+        break;
+      default:
+        setForm(null);
+    }
+  }, [formData.rol]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isReadOnly && form) {
-      const result = await form.handleSubmit(formData);
-      if (result) {
-        toast.success("Datos actualizados");
-      }
-      setIsReadOnly(true);
+    if (form) {
+      const response = await form.handleSubmit(formData);
+      toast.success("Login exitoso");
+      localStorage.setItem("id", response);
+      router.push("/login");
     } else {
-      setIsReadOnly(false);
-      toast.info("Editando Datos");
+      console.log("rol no valido");
+      toast.error("Oops! rol no valido!");
     }
   };
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handleChange = (e: any, value?: string) => {
+    if (value !== undefined) {
+      setFormData((prevState) => ({
+        ...prevState,
+        sexo: value,
+      }));
+    } else {
+      const { name, value } = e.target;
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
-
   return (
     <>
-      <div className="relative z-50 mb-0 md:mb-8 lg:mb-12">
-        <h1 className="relative text-secondary text-xl font-bold px-[60px]">
-          {titulo !== "" ? titulo : "Cargando..."}
+      <form className="w-full p-10 grid gap-4 my-auto" onSubmit={handleSubmit}>
+        <h1 className="text-center text-secondary text-3xl font-semibold">
+          Registrarse
         </h1>
-        <div className="absolute -top-20 left-0 right-0">
-          <div className="hidden justify-center items-center sm:flex">
-            <Avatar
-              isBordered
-              color="danger"
-              src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
-              className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40"
-            />
+        <div className="grid sm:grid-cols-2 md:grid-flow-cols-3">
+          <div className="flex w-full flex-col md:flex-nowrap gap-4">
+            <div
+              className="md:flex-nowrap 
+          p-5 flex w-full flex-col gap-4"
+            >
+              {/* inputs */}
+              <Input
+                isRequired={true}
+                variant="underlined"
+                label="cedula"
+                placeholder="1111111111"
+                name="cedula"
+                value={formData.cedula}
+                onChange={handleChange}
+                type="number"
+                classNames={{
+                  base: "font-bold",
+                }}
+              />
+						</div>
+					</div>
+					<div className="flex w-full flex-col md:flex-nowrap gap-4">
+						<div
+							className="md:flex-nowrap 
+          p-5 flex w-full flex-col gap-4"
+            >
+              {/* inputs */}
+              <Input
+                isRequired={true}
+                type="text"
+                variant="underlined"
+                label="Nombre"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                placeholder="Juan Diego"
+                classNames={{
+                  base: "font-bold",
+                }}
+              />
+              <Input
+                isRequired={true}
+                type="email"
+                variant="underlined"
+                label="Correo"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="tucorreo@ejemplo.com"
+                classNames={{
+                  base: "font-bold",
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <form className="w-full p-10 grid my-auto" onSubmit={handleSubmit}>
         <div className="flex flex-col items-center">
           <Button
             color="secondary"
             variant="solid"
             type="submit"
             radius="full"
-            className="w-1/3 min-w-32 mb-2 text-white"
+            className="w-1/5 min-w-32 mb-2 text-white"
           >
-            {isReadOnly ? "Editar Perfil" : "Guardar Perfil"}
+            Registrarse
           </Button>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-4 p-5">
-          <Input
-            isReadOnly={isReadOnly}
-            isRequired={true}
-            type="email"
-            variant="underlined"
-            label="Correo"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="tucorreo@ejemplo.com"
-            classNames={{ base: "font-bold" }}
-          />
-          <Input
-            isReadOnly={isReadOnly}
-            isRequired={true}
-            type="text"
-            variant="underlined"
-            label="Nickname"
-            name="nickname"
-            value={formData.nickname}
-            onChange={handleChange}
-            placeholder="Juan123"
-            classNames={{ base: "font-bold" }}
-          />
-          <Input
-            isReadOnly={isReadOnly}
-            isRequired={true}
-            type="password"
-            variant="underlined"
-            label="Contraseña"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="********"
-            classNames={{ base: "font-bold" }}
-          />
+          <p className="text-sm">
+            ¿Ya tienes cuenta?{" "}
+            <Link href="/login" className="text-primary underline font-bold">
+              Ingresar
+            </Link>
+          </p>
         </div>
       </form>
     </>
   );
 }
-
-
-
-
-
-
-// "use client";
-// import { toast } from "react-toastify";
-// import { FormEvent, useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-// import {
-//   Autocomplete,
-//   AutocompleteItem,
-//   Avatar,
-//   Button,
-//   Input,
-// } from "@nextui-org/react";
-// import {
-//   //contexturas,
-//   countries,
-//   especialidad,
-//   sexos,
-//   paises,
-//   acciones2
-// } from "@/utils/constantes/data";
-// import axios from "axios";
-
-// type FormData = {
-//   rol: string;
-//   email: string;
-//   nombre: string; //username en API
-//   password: string; //password en API (era campo cédula)
-// };
-// interface IForm {
-//   handleSubmit(formData: FormData): Promise<boolean>;
-// }
-
-// //Actualización para datos del perfil estudiante 
-// class Estudiante implements IForm {
-//   async handleSubmit(formData: FormData): Promise<boolean> {
-//     const {
-//       rol,
-//       nombre,
-//       password,
-//       email
-//     } = formData;
-//     console.log(formData);
-//     try {
-//       const response = await axios.post(
-//         //Petición al back para estudiante
-//         `${process.env.NEXT_PUBLIC_URL_BACKEND}/ActualizarUsuarioCiclista`,
-//         {
-//           idusuario: password,
-//           nombre,
-//           email,
-//           rol_id: rol,
-//         }
-//       );
-//       if (response.status === 200) {
-//         toast.success("Usuario actualizado correctamente"); // Notificación de éxito
-//         return true;
-//       } else {
-//         toast.error("Error al actualizar el usuario"); // Notificación de error
-//         return false; // Ocurrió un error en el back
-//       }
-//     } catch (error) {
-//       console.error("Error en handleSubmit:", error);
-//       toast.error("Error al actualizar el usuario"); // Notificación de error
-//       return false; // Ocurrió un error al realizar el fetch
-//     }
-//   }
-// }
-
-// //Actualización para datos del perfil admin 
-
-// /*
-// class Director implements IForm {
-//   async handleSubmit(formData: FormData): Promise<boolean> {
-//     const { rol, nombre, cedula, sexo, email, nacionalidad, equipos } =
-//       formData;
-//     console.log(formData);
-//     try {
-//       const response = await axios.post(
-//         `${process.env.NEXT_PUBLIC_URL_BACKEND}/ActualizarUsuarioDirector`,
-//         {
-//           idusuario: cedula,
-//           nombre,
-//           email,
-//           sexo: sexo.charAt(0),
-//           rol_id: rol,
-//           nacionalidad,
-//           nombreEquipo: equipos,
-//         }
-//       );
-//       if (response.status === 200) {
-//         return true;
-//       } else {
-//         return false; // Ocurrió un error en el back
-//       }
-//     } catch (error) {
-//       console.error("Error en handleSubmit:", error);
-//       return false; // Ocurrió un error al realizar el fetch
-//     }
-//   }
-// }*/
-
-// export default function Perfil() {
-//   const router = useRouter();
-//   const [formData, setFormData] = useState({
-//     rol: "",
-//     email: "",
-//     nombre: "",
-//     password: "",
-//     // sexo: "",
-//     // especialidad: "0",
-//     // experiencia: "",
-//     // nacionalidad: "",
-//     // tiempoAcumula: "0",
-//     // acciones: [{ value: "", label: "" }],
-//     // equipos: "",
-//   });
-//   const [form, setForm] = useState<IForm | null>(null);
-//   const [titulo, setTitulo] = useState("");
-//   const [equip, setEquip] = useState<string | string[] | null>(null);
-//   const [isReadOnly, setIsReadOnly] = useState(true);
-//   const [acciones, setAcciones] = useState("");
-
-//   useEffect(() => {
-//     const fetchPerfil = async () => {
-//       try {
-//         //hacer la peticion get en base al id
-//         let rol = localStorage.getItem("rol");
-//         let response;
-//         switch (rol) {
-//           case "1":
-//             console.log(
-//               //Petición al back para estudiante
-//               `URL: ${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/perfilCiclista`
-//             );
-//             // let accionesObject = perfilData.acciones.map((accion: any) => ({
-//             //   label: accion,
-//             //   value: accion
-//             // }));
-//             response = await axios.post(
-//             //Petición al back para estudiante
-//               `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/perfilCiclista`,
-//               {
-//                 idusuario: localStorage.getItem("id"),
-//               }
-//             );
-//             response = response.data;
-//             break;
-//           case "2":
-//             response = await axios.post(
-//             //Petición para administrador
-//               `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/perfilMasajista`,
-//               {
-//                 idusuario: localStorage.getItem("id"),
-//               }
-//             );
-//             response = response.data;
-//             break;
-//           /*case "3":
-//             response = await axios.post(
-//               `${process.env.NEXT_PUBLIC_URL_BACKEND}/usuarios/perfilDirector`,
-//               {
-//                 idusuario: localStorage.getItem("id"),
-//               }
-//             );
-//             response = response.data;
-//             break;*/
-//         }
-//         // Suponiendo que la respuesta tiene la estructura esperada para llenar formData
-//         const perfilData = response;
-//         // console.log(accionesObject);
-//         setFormData({
-//           rol: perfilData.rol_id.toString(),
-//           email: perfilData.email,
-//           nombre: perfilData.nombre,
-//           password: perfilData.idusuario.toString(),
-//           // sexo: perfilData.sexo === "M" ? "Masculino" : "Femenino",
-//           // contextura: perfilData.contextura || "",
-//           // especialidad: perfilData.especialidad_id?.toString() || "0", //solo para estudiantes - revisar
-//           // experiencia: perfilData.anios_experiencia || "",
-//           // nacionalidad: perfilData.nacionalidad || "",
-//           // tiempoAcumula: perfilData.tiempoAcumula || "0",
-//           // acciones: acciones2 || [{ value: "", label: "" }],
-//           // equipos: perfilData.equipos || [""], // un array de strings con los nombres de equipos
-//         });
-//         // console.log(formData.acciones);
-//       } catch (error) {
-//         console.error("Error al obtener el perfil:", error);
-//       }
-//     };
-//     fetchPerfil();
-//     // Cambiar la estrategia según el rol
-//     switch (formData.rol) {
-//       case "1":
-//         setTitulo("Estudiante");
-//         //setEquip(formData.equipos);
-//         setForm(new Estudiante());
-//         break;
-//       case "2":
-//         setTitulo("Administrador");
-//         setEquip(null);
-//         //setForm(new Admin());
-//         break;
-//       /*case "3":
-//         setTitulo("DIRECTOR");
-//         setEquip(formData.equipos);
-//         setForm(new Director());
-//         break;*/
-//       default:
-//         setForm(null);
-//     }
-//   }, [formData.rol, /*formData.equipos*/, setTitulo, setEquip]);
-
-//   const handleSubmit = async (e: FormEvent) => {
-//     e.preventDefault();
-//     if (isReadOnly == false) {
-//       if (form) {
-//         await form.handleSubmit(formData);
-//         setIsReadOnly(!isReadOnly);
-//         toast.success("Datos actualizados");
-//       } else {
-//         toast.error("Rol no valido");
-//       }
-//     } else {
-//       setIsReadOnly(!isReadOnly);
-//       toast.info("Editando Datos");
-//     }
-//   };
-//   const handleChange = (e: any, value?: string) => {
-//     if (value !== undefined) {
-//       setFormData((prevState) => ({
-//         ...prevState,
-//         sexo: value,
-//       }));
-//     } else {
-//       const { name, value } = e.target;
-//       setFormData((prevState) => ({
-//         ...prevState,
-//         [name]: value,
-//       }));
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="relative z-50 mb-0 md:mb-8 lg:mb-12">
-//         <h1 className="absolute left-0 text-secondary text-base md:text-xl xl:text-2xl font-bold px-[60px]">
-//           {titulo}
-//         </h1>
-//         <div className="absolute -top-20 left-0 right-0">
-//           <div className="hidden justify-center items-center sm:flex">
-//             <Avatar
-//               isBordered
-//               color="danger"
-//               src="https://i.pravatar.cc/150?u=a04258a2462d826712d"
-//               className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40"
-//             />
-//           </div>
-//         </div>
-//         <h1 className="absolute right-0 text-secondary text-base md:text-xl xl:text-2xl font-bold text-right px-[60px]">
-//           {equip}
-//         </h1>
-//       </div>
-//       <form className="w-full p-10 grid my-auto" onSubmit={handleSubmit}>
-//         <div className="flex flex-col items-center">
-//           <Button
-//             color="secondary"
-//             variant="solid"
-//             type="submit"
-//             radius="full"
-//             className="w-1/3 min-w-32 mb-2 text-white"
-//           >
-//             {isReadOnly == true ? "Editar Perfil" : "Guardar Perfil"}
-//           </Button>
-//         </div>
-//         <div className="grid sm:grid-cols-2 gap-4 p-5">
-//           {/* inputs */}
-//           <Input
-//             isReadOnly={isReadOnly}
-//             isRequired={true}
-//             type="email"
-//             variant="underlined"
-//             label="Correo"
-//             name="email"
-//             value={formData.email}
-//             onChange={handleChange}
-//             placeholder="tucorreo@ejemplo.com"
-//             classNames={{
-//               base: "font-bold",
-//             }}
-//           />
-//           <Input
-//             isReadOnly={isReadOnly}
-//             isRequired={true}
-//             type="text"
-//             variant="underlined"
-//             label="Nombre"
-//             name="nombre"
-//             value={formData.nombre}
-//             onChange={handleChange}
-//             placeholder="Juan Diego"
-//             classNames={{
-//               base: "font-bold",
-//             }}
-//           />
-//           <Input
-//             isReadOnly={true}
-//             isRequired={true}
-//             variant="underlined"
-//             label="password"
-//             placeholder="1111111111"
-//             name="password"
-//             value={formData.password}
-//             onChange={handleChange}
-//             type="number"
-//             classNames={{
-//               base: "font-bold",
-//             }}
-//           />
-//           <div
-//             className={`flex flex-col gap-xs w-full
-//                           md:flex md:gap-xs`}
-//           >
-//             <p className="tracking-tight text-foreground-600 font-bold ml-1 text-sm pe-2 max-w-full text-ellipsis">
-//               Sexo <span className="text-danger">*</span>
-//             </p>
-//             <div
-//               className={`flex justify-center w-full
-//                           md:flex md:gap-xs`}
-//             >
-//               {/* {sexos!.map((option, indexOption) => (
-//                 <div key={indexOption} className="w-1/2 mx-4">
-//                   <label
-//                     key={indexOption}
-//                     htmlFor={`${indexOption}`}
-//                     tabIndex={0}
-//                     className={`flex items-center justify-center text-small text-secondary font-light py-3 px-4 border-1 border-secondary rounded-default cursor-pointer w-full text-center 
-//                       transition-all ease-in-out duration-300 
-//                       ${formData.sexo === option ? "bg-primary text-white" : ""} 
-//                       outline-secondary`}
-//                     onKeyDown={(event) =>
-//                       !isReadOnly &&
-//                       event.key === "Enter" &&
-//                       handleChange(undefined, option)
-//                     }
-//                   >
-//                     {option}
-//                     <input
-//                       type="radio"
-//                       hidden
-//                       id={`${indexOption}`}
-//                       name="sexo"
-//                       value={option}
-//                       onChange={() => handleChange(undefined, option)}
-//                       checked={formData.sexo === option}
-//                       disabled={isReadOnly}
-//                     />
-//                   </label>
-//                 </div>
-//               ))} */}
-//             </div>
-//           </div>
-
-//           {(() => {
-//             if (formData.rol === "1") {
-//               return (
-//                 <>
-//                   {/* Componentes para estudiante */}
-//                   {/* <Autocomplete
-//                     isReadOnly={isReadOnly}
-//                     label="Especialidad"
-//                     color="secondary"
-//                     variant="underlined"
-//                     size="md"
-//                     radius="md"
-//                     placeholder="Seleccione una Especialidad"
-//                     defaultItems={especialidad}
-//                     defaultSelectedKey={formData.especialidad}
-//                     onSelectionChange={(value) =>
-//                       setFormData((prev) => ({
-//                         ...prev,
-//                         especialidad: value as string,
-//                       }))
-//                     }
-//                     classNames={{
-//                       base: "font-bold",
-//                     }}
-//                   >
-//                     {especialidad.map((option) => (
-//                       <AutocompleteItem
-//                         key={option.value}
-//                         value={option.label}
-//                         classNames={{
-//                           selectedIcon: "text-secondary",
-//                         }}
-//                       >
-//                         {option.label}
-//                       </AutocompleteItem>
-//                     ))}
-//                   </Autocomplete> */}
-
-//                   {/* <Autocomplete
-//                     isReadOnly={isReadOnly}
-//                     label="Contextura"
-//                     color="secondary"
-//                     variant="underlined"
-//                     size="md"
-//                     radius="md"
-//                     placeholder="Seleccione un Rol"
-//                     //defaultItems={contexturas}
-//                     //defaultSelectedKey={formData.contextura}
-//                     onSelectionChange={(value) =>
-//                       setFormData((prev) => ({
-//                         ...prev,
-//                         contextura: value as string,
-//                       }))
-//                     }
-//                     classNames={{
-//                       base: "font-bold",
-//                     }}
-//                   >
-//                     {contexturas.map((option) => (
-//                       <AutocompleteItem
-//                         key={option.value}
-//                         value={option.label}
-//                         classNames={{
-//                           selectedIcon: "text-secondary",
-//                         }}
-//                       >
-//                         {option.label}
-//                       </AutocompleteItem>
-//                     ))}
-//                   </Autocomplete> */}
-
-//                   {/* <Autocomplete
-//                     isReadOnly={isReadOnly}
-//                     label="Acciones"
-//                     color="secondary"
-//                     variant="underlined"
-//                     size="md"
-//                     radius="md"
-//                     placeholder="Seleccione un Rol"
-//                     //defaultItems={formData.acciones}
-//                     //defaultSelectedKey={formData.acciones[0].value}
-//                     onSelectionChange={(value) => setAcciones(value as string)}
-//                     classNames={{
-//                       base: "font-bold",
-//                     }}
-//                   >
-//                     { {formData.acciones.map((option) => (
-//                       <AutocompleteItem
-//                         key={option.value}
-//                         value={option.label}
-//                         classNames={{
-//                           selectedIcon: "text-secondary",
-//                         }}
-//                       >
-//                         {option.label}
-//                       </AutocompleteItem>
-//                     ))} }
-//                   </Autocomplete> */}
-//                   <Input
-//                     isReadOnly={isReadOnly}
-//                     variant="underlined"
-//                     type="number"
-//                     label="Experiencia"
-//                     placeholder="10.25"
-//                     name="experiencia"
-//                     //value={formData.tiempoAcumula.toString()}
-//                     onChange={handleChange}
-//                     classNames={{
-//                       base: "font-bold",
-//                     }}
-//                     labelPlacement="outside"
-//                     endContent={
-//                       <div className="pointer-events-none flex items-center">
-//                         <span className="text-default-400 text-small">
-//                           Horas
-//                         </span>
-//                       </div>
-//                     }
-//                   />
-//                 </>
-//               );
-//             } else if (formData.rol === "2") {
-//               return (
-//                 <Input
-//                   isReadOnly={isReadOnly}
-//                   isRequired={true}
-//                   variant="underlined"
-//                   label="Experiencia"
-//                   placeholder="20 años"
-//                   name="experiencia"
-//                   //value={formData.experiencia}
-//                   onChange={handleChange}
-//                   type="number"
-//                   classNames={{
-//                     base: "font-bold",
-//                   }}
-//                 />
-//               );
-//             } else if (formData.rol === "3") {
-//               return (
-//                 <Autocomplete
-//                   isReadOnly={isReadOnly}
-//                   label="Nacionalidad"
-//                   color="secondary"
-//                   variant="underlined"
-//                   size="md"
-//                   radius="md"
-//                   placeholder="Seleccione un Nacionalidad"
-//                   defaultItems={paises}
-//                   onSelectionChange={(value) =>
-//                     setFormData((prev) => ({
-//                       ...prev,
-//                       nacionalidad: value as string,
-//                     }))
-//                   }
-//                   classNames={{
-//                     base: "font-bold",
-//                   }}
-//                 >
-//                   {countries.map((option: string) => (
-//                     <AutocompleteItem
-//                       key={option}
-//                       value={option}
-//                       classNames={{
-//                         selectedIcon: "text-secondary",
-//                       }}
-//                     >
-//                       {option}
-//                     </AutocompleteItem>
-//                   ))}
-//                 </Autocomplete>
-//               );
-//             }
-//           })()}
-//         </div>
-//       </form>
-//     </>
-//   );
-// }
