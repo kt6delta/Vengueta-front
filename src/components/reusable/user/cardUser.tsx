@@ -26,7 +26,7 @@ export const CardUser = ({
             <Image
               alt="Card background"
               className="object-cover rounded-full"
-              src={img || '/avatar.png'}
+              src={img || '/casa2.png'}
               width={70}
               height={70}
             />

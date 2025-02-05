@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Title } from "@/components/reusable/title";
 import { CardWrapper } from "@/components/reusable/CardWrapper";
-import {CalendarDate} from "@internationalized/date";
 import {
   Autocomplete,
   AutocompleteItem,
