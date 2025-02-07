@@ -12,7 +12,7 @@ export const Card: React.FC<CardProps> = ({ card }) => {
   return (
     <div className="w-[400px] h-[250px] flex-shrink-0 rounded-3xl overflow-hidden m-2">
       <img 
-        src={`/espacio${card.id}.jpg`} // Asegúrate de que las imágenes estén en la carpeta `public`
+        src={`/espacio${card.id}.jpg`} 
         alt={card.title} 
         className="w-full h-full object-cover"
         onError={(e) => {
