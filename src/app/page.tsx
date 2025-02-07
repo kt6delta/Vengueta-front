@@ -14,7 +14,7 @@ import '../index.css';
 export default function HomePage() {
   const router = useRouter();
   const carouselCards = [...cards, ...cards]
-  const carouselEtapas = [...etapas, ...etapas]
+  //const carouselEtapas = [...etapas, ...etapas]
 
 
   return (
@@ -57,12 +57,12 @@ export default function HomePage() {
         <div className="flex flex-col md:flex-row items-center justify-between mt-10">
           <div className="md:w-1/2 flex flex-col items-end px-4">
             <h1 className="text-4xl font-bold mb-4 ">Bienvenido a nuestra plataforma</h1>
-            <p className="text-xl mb-8">Aqui podras gestionar tus equipos de forma eficiente.</p>
+            <p className="text-xl mb-8">Aqui podras reservar espacio de forma eficiente.</p>
             <button
               className="px-6 py-3 bg-black text-white rounded-lg hover:bg-blue-500"
               onClick={() => router.push('/registro')}
             >
-              Registrate
+              Regístrate
             </button>
           </div>
           <div className="md:w-1/2 flex justify-end md:mt-0 blur-sm">
@@ -79,7 +79,7 @@ export default function HomePage() {
 
         {/* Features Section */}
         <div className="py-20 w-full">
-          <h2 className="text-3xl font-bold text-center mb-10">Ciclistas</h2>
+          <h2 className="text-3xl font-bold text-center mb-10">Espacios</h2>
           <div className="w-full items-center">
             <div className="overflow-hidden w-full flex">
               <div className="flex whitespace-nowrap w-full animate-scroll">
@@ -90,21 +90,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        {/* Features Section */}
-        <div className=" w-full">
-          <h2 className="text-3xl font-bold text-center mb-10">Etapas</h2>
-          <div className="w-full items-center">
-            <div className="overflow-hidden w-full flex">
-              <div className="flex whitespace-nowrap w-full animate-scroll">
-                {carouselEtapas.map((etapa, index) => (
-                  <CardEtapas etapa={etapa} key={index} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-
       </main>
 
       <div className=" p-0 rounded-2xl w-full min-h-20 mt-auto">
