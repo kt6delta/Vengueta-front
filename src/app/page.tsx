@@ -3,19 +3,14 @@ import { useRouter } from 'next/navigation';
 import { Navbar, NavbarContent, NavbarItem } from "@nextui-org/react";
 import Image from 'next/image';
 import { cards } from '../components/reusable/carruselCard/data';
-import { etapas } from '../components/reusable/carruselCard/dataEtapas';
 import { Card } from '../components/reusable/carruselCard/Card';
 import { Link } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
-import { CardEtapas } from '@/components/reusable/carruselCard/CardEtapa';
 import '../index.css';
-
 
 export default function HomePage() {
   const router = useRouter();
   const carouselCards = [...cards, ...cards]
-  //const carouselEtapas = [...etapas, ...etapas]
-
 
   return (
     <div className="min-h-screen flex flex-col  justify-center bg-gradient-to-r from-gray-50 to-blue-600">
@@ -47,11 +42,6 @@ export default function HomePage() {
         </NavbarContent>
       </Navbar>
 
-
-
-
-
-
       <main className="flex-grow">
         {/* Welcome Section */}
         <div className="flex flex-col md:flex-row items-center justify-between mt-10">
@@ -82,10 +72,12 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-10">Espacios</h2>
           <div className="w-full items-center">
             <div className="overflow-hidden w-full flex">
-              <div className="flex whitespace-nowrap w-full animate-scroll">
-                {carouselCards.map((card, index) => (
-                  <Card card={card} key={index} />
-                ))}
+              <div className="w-full overflow-hidden flex justify-center">
+                <div className="flex gap-4 whitespace-nowrap w-full animate-scroll">
+                  {carouselCards.map((card, index) => (
+                    <Card card={card} key={index} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
