@@ -12,14 +12,14 @@ import Link from "next/link";
 export default function Login() {
 	const router = useRouter();
 	const [isVisible, setIsVisible] = useState(false);
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState({ //almacenar datos del form
 		email: "",
 		password: "",
 	});
 
-	const toggleVisibility = () => setIsVisible(!isVisible);
+	const toggleVisibility = () => setIsVisible(!isVisible); //visibilidad de contraseña
 
-	const handleChange = (e: any) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
 		const { name, value } = e.target;
 		setFormData((prevState) => ({
 			...prevState,
@@ -27,128 +27,84 @@ export default function Login() {
 		}));
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {//envío del form
 		e.preventDefault();
 		try {
 			const { email, password } = formData;
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_URL_BACKEND}/login`,
-				{
-					email,
-					password,
-				}
-			);
-			toast.success("Login exitoso");
-			let rol = response.data.rol_id;
-			localStorage.setItem("id", response.data.idusuario);
-			localStorage.setItem("rol", response.data.rol_id);
+			const payload = {
+				username: email, 
+				password,
+			};
 
-			switch (rol) {
-				case 1:
-					router.push("/ciclista");
-					break;
-				case 2:
-					router.push("/masajista");
-					break;
-				case 3:
-					router.push("/director");
-					break;
-				case 4:
-					router.push("/dashboard");
-					break;
-				default:
-					console.log("No se encontro el rol");
-					break;
-			}
+			await axios.post("http://localhost:8080/signin", payload); //petición post para iniciar sesión (debería funcionar xd)
+
+			toast.success("Login exitoso");
+			router.push("/reserva"); //redirige a reserva
 		} catch (error) {
-			toast.error("Oops! Algo salio mal!");
+			toast.error("Oops! Algo salió mal!");
 			console.error(error);
 		}
 	};
 
 	return (
-		<>
-			<form
-				className="w-full grid md:grid-cols-2 gap-4"
-				onSubmit={handleSubmit}
-			>
-				<div className="hidden justify-center items-center md:flex">
-					<Image
-						className="object-cover rounded-default"
-						width={"700"}
-						height={"700"}
-						src="/casa3.png"
-						alt="logo"
-						loading="lazy"
+		<form className="w-full grid md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
+			<div className="hidden justify-center items-center md:flex">
+				<Image
+					className="object-cover rounded-default"
+					width={700}
+					height={700}
+					src="/casa3.png"
+					alt="logo"
+					loading="lazy"
+				/>
+			</div>
+			<div className="flex w-full flex-col gap-4 p-10 my-auto">
+				<h1 className="text-center text-secondary text-3xl font-semibold">Inicia Sesión</h1>
+				<div className="flex flex-col gap-4 p-5">
+					<Input
+						isRequired
+						type="email"
+						variant="underlined"
+						label="Email"
+						name="email"
+						value={formData.email}
+						onChange={handleChange}
+						placeholder="tucorreo@ejemplo.com"
+						classNames={{ base: "font-bold" }}
 					/>
-				</div>
-				<div className="flex w-full flex-col gap-4 p-10 my-auto">
-					<h1 className="text-center text-secondary text-3xl font-semibold">
-						INGRESO
-					</h1>
-					<div className="flex flex-col gap-4 p-5">
-						<Input
-							isRequired={true}
-							type="email"
-							variant="underlined"
-							label="Email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-							placeholder="tucorreo@ejemplo.com"
-							classNames={{
-								base: "font-bold",
-							}}
-						/>
-						<Input
-							isRequired={true}
-							variant="underlined"
-							label="Password"
-							placeholder="******"
-							name="password"
-							value={formData.password}
-							onChange={handleChange}
-							classNames={{
-								base: "font-bold",
-							}}
-							endContent={
-								<button
-									className="focus:outline-none"
-									type="button"
-									onClick={toggleVisibility}
-								>
-									{isVisible ? (
-										<EyeSlashFilledIcon className="text-2xl text-default-400" />
-									) : (
-										<EyeFilledIcon className="text-2xl text-default-400" />
-									)}
-								</button>
-							}
-							type={isVisible ? "text" : "password"}
-						/>
-						<div className="flex flex-col items-center mt-4">
-							<Button
-								color="primary"
-								radius="full"
-								variant="ghost"
-								type="submit"
-								className="w-44 mb-2 "
-							>
-								Ingresar
-							</Button>
-							<p className="text-sm">
-								¿No tienes cuenta?{" "}
-								<Link
-									href="/registro"
-									className="text-primary underline font-bold"
-								>
-									Registrate
-								</Link>
-							</p>
-						</div>
+					<Input
+						isRequired
+						variant="underlined"
+						label="Password"
+						placeholder="******"
+						name="password"
+						value={formData.password}
+						onChange={handleChange}
+						classNames={{ base: "font-bold" }}
+						endContent={
+							<button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+								{isVisible ? (
+									<EyeSlashFilledIcon className="text-2xl text-default-400" />
+								) : (
+									<EyeFilledIcon className="text-2xl text-default-400" />
+								)}
+							</button>
+						}
+						type={isVisible ? "text" : "password"}
+					/>
+					<div className="flex flex-col items-center mt-4">
+						<Button color="primary" radius="full" variant="ghost" type="submit" className="w-44 mb-2">
+							Ingresar
+						</Button>
+						<p className="text-sm">
+							¿No tienes cuenta?{" "}
+							<Link href="/registro" className="text-primary underline font-bold">
+								Regístrate
+							</Link>
+						</p>
 					</div>
 				</div>
-			</form>
-		</>
+			</div>
+		</form>
 	);
 }
