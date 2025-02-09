@@ -36,10 +36,10 @@ export default function Login() {
 				password,
 			};
 
-			await axios.post("http://localhost:8080/signin", payload); //petición post para iniciar sesión (debería funcionar xd)
+			await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signin`, payload); //petición post para iniciar sesión (debería funcionar xd)
 
 			toast.success("Login exitoso");
-			router.push("/reserva"); //redirige a reserva
+			router.push("/reserva"); 
 		} catch (error) {
 			toast.error("Oops! Algo salió mal!");
 			console.error(error);

@@ -16,7 +16,7 @@ class Usuario implements IForm {
     const { username, email, password } = formData;
     try {
       const response = await axios.post( //se supone que con este endpoint se envía la información
-        "http://localhost:8080/signup",
+        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signup`,
         {
           username, 
           email,
@@ -28,7 +28,10 @@ class Usuario implements IForm {
           },
         }
       );
-      return response.data.idusuario; // Ajusta esto según la respuesta real del backend
+      if (response.data === "User registered successfully!") {
+        return "success";
+      }
+      return "";
     } catch (error) {
       toast.error("Oops! Error en la creación de usuario");
       return "";
@@ -48,10 +51,9 @@ export default function Registro() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const response = await form.handleSubmit(formData);
-    if (response) {
+    if (response === "success") {
       toast.success("Registro exitoso");
-      localStorage.setItem("id", response);
-      router.push("/login");
+      router.push(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/login`);
     }
   };
 
