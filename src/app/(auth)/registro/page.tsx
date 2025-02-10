@@ -16,7 +16,8 @@ class Usuario implements IForm {
     const { username, email, password } = formData;
     try {
       const response = await axios.post( //se supone que con este endpoint se envía la información
-        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signup`,
+        `
+        `,
         {
           username, 
           email,

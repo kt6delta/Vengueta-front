@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Avatar, Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
-// FormData según Endpoints
 type FormData = {
   rol: string;
   email: string;
@@ -17,15 +16,31 @@ interface IForm {
   handleSubmit(formData: FormData): Promise<boolean>;
 }
 
+//actualizar perfil
 class UsuarioUpdate implements IForm {
   async handleSubmit(formData: FormData): Promise<boolean> {
     const { rol, nickname, password, email } = formData;
+
+    const userId = localStorage.getItem("user_id"); //por defecto de la base de datos
+    const token = localStorage.getItem("auth_token");
+
+    if (!userId || !token) {
+      toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
+      return false;
+    }
+
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${nickname}`,
+        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`, // Se usa el ID en la URL
         { username: nickname, email, rol, password },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, //token que pide el back
+          },
+        }
       );
+
       if (response.status === 200) {
         toast.success("Usuario actualizado correctamente");
         return true;
@@ -51,47 +66,44 @@ export default function Perfil() {
   });
 
   const [form, setForm] = useState<IForm | null>(null);
-  const [titulo, setTitulo] = useState<string>(""); // Inicialmente cadena vacía
+  const [titulo, setTitulo] = useState<string>("Cargando...");
   const [isReadOnly, setIsReadOnly] = useState(true);
 
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-         //await new Promise((resolve) => setTimeout(resolve, 500));
+        const userId = localStorage.getItem("user_id");
+        const token = localStorage.getItem("auth_token");
 
-        // Datos simulados pa probar (mock)
-        // const perfilData = {
-        //   rol: "usuario",
-        //   email: "juan@example.com",
-        //   username: "Juan123", // Valor simulado
-        //   password: "fakePassword",
-        // };
-
-        // Obtener el nickname del localStorage (suponiendo que es el id)
-        const userNickname = localStorage.getItem("nickname");
-        if (!userNickname) {
-          console.error("No se encontró el nickname en localStorage");
+        if (!userId || !token) {
+          toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
           return;
         }
 
-        // Llamada al backend
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userNickname}`,
-          { headers: { "Content-Type": "application/json" } }
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Enviar el token en la petición
+            },
+          }
         );
+
         const perfilData = response.data;
         console.log("Datos recibidos:", perfilData);
 
-        // Actualiza los estados con los datos del backend
         setFormData({
           rol: perfilData.rol,
           email: perfilData.email,
           nickname: perfilData.username,
           password: perfilData.password,
         });
-        setTitulo(perfilData.username || "");
+
+        setTitulo(perfilData.username || "Usuario");
       } catch (error) {
         console.error("Error al obtener el perfil:", error);
+        toast.error("Error al cargar el perfil.");
       }
     };
 
@@ -99,10 +111,9 @@ export default function Perfil() {
     setForm(new UsuarioUpdate());
   }, []);
 
-  console.log("Render: Título actual:", titulo);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     if (!isReadOnly && form) {
       const result = await form.handleSubmit(formData);
       if (result) {
@@ -127,7 +138,7 @@ export default function Perfil() {
     <>
       <div className="relative z-50 mb-0 md:mb-8 lg:mb-12">
         <h1 className="relative text-secondary text-xl font-bold px-[60px]">
-          {titulo !== "" ? titulo : "Cargando..."}
+          {titulo}
         </h1>
         <div className="absolute -top-20 left-0 right-0">
           <div className="hidden justify-center items-center sm:flex">
@@ -140,6 +151,7 @@ export default function Perfil() {
           </div>
         </div>
       </div>
+
       <form className="w-full p-10 grid my-auto" onSubmit={handleSubmit}>
         <div className="flex flex-col items-center">
           <Button
@@ -152,10 +164,11 @@ export default function Perfil() {
             {isReadOnly ? "Editar Perfil" : "Guardar Perfil"}
           </Button>
         </div>
+
         <div className="grid sm:grid-cols-2 gap-4 p-5">
           <Input
             isReadOnly={isReadOnly}
-            isRequired={true}
+            isRequired
             type="email"
             variant="underlined"
             label="Correo"
@@ -167,7 +180,7 @@ export default function Perfil() {
           />
           <Input
             isReadOnly={isReadOnly}
-            isRequired={true}
+            isRequired
             type="text"
             variant="underlined"
             label="Nickname"
@@ -179,7 +192,7 @@ export default function Perfil() {
           />
           <Input
             isReadOnly={isReadOnly}
-            isRequired={true}
+            isRequired
             type="password"
             variant="underlined"
             label="Contraseña"
