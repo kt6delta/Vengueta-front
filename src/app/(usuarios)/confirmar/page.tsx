@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
-import InformacionEquipo from "@/components/reusable/informacionEquipo";
-import { Title } from "@/components/reusable/title";
+import Confirmar from "@/components/reusable/Confirmar";
 
-export default function InfoEquipo() {
+export default function Confirma() {
 
     return (
         <>
-            <InformacionEquipo />
+            <Confirmar />
         </>
     )
 }

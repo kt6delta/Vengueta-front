@@ -1,22 +1,22 @@
 import React from "react";
-import { Card,  Image } from "@nextui-org/react";
+import { Card, Image } from "@nextui-org/react";
 
 type CardUserProps = {
   nombre: string;
-  especialidad: string;
-  tiempoAcomulado: string;
-  genero: string;
-  contextura: string;
+  especialidad?: string;
+  tiempoAcomulado?: string;
+  genero?: string;
+  contextura?: string;
   img?: string;
 };
 
 export const CardUser = ({
   nombre,
-  especialidad,
-  tiempoAcomulado,
-  genero,
-  contextura,
-  img,
+  especialidad='',
+  tiempoAcomulado = '',
+  genero = '',
+  contextura = '',
+  img = '/casa2.png',
 }: CardUserProps) => {
   return (
     <>
@@ -26,7 +26,7 @@ export const CardUser = ({
             <Image
               alt="Card background"
               className="object-cover rounded-full"
-              src={img || '/casa2.png'}
+              src={img}
               width={70}
               height={70}
             />

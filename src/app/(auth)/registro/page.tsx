@@ -15,9 +15,7 @@ class Usuario implements IForm {
   async handleSubmit(formData: any): Promise<string> {
     const { username, email, password } = formData;
     try {
-      const response = await axios.post( //se supone que con este endpoint se envía la información
-        `
-        `,
+      const response = await axios.post( `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signup`,
         {
           username, 
           email,
@@ -29,7 +27,7 @@ class Usuario implements IForm {
           },
         }
       );
-      if (response.data === "User registered successfully!") {
+      if (response.status == 200) {
         return "success";
       }
       return "";
@@ -54,7 +52,7 @@ export default function Registro() {
     const response = await form.handleSubmit(formData);
     if (response === "success") {
       toast.success("Registro exitoso");
-      router.push(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/login`);
+      router.push(`/login`);
     }
   };
 

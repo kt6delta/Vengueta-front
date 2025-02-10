@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import React, { useState, useEffect } from "react";
 import { Title } from "@/components/reusable/title";
 import { CardWrapper } from "@/components/reusable/CardWrapper";
 import {
@@ -14,38 +16,54 @@ import { CardUser } from "@/components/reusable/user/cardUser";
 import { horas } from "@/utils/constantes/data";
 import { IoSearch } from "react-icons/io5";
 
-export default function InformacionEquipo() {
+export default function Confirmar() {
+
+  useEffect(() => {
+    const fetchRecursos = async () => {
+      try {
+        const token = localStorage.getItem("auth_token");
+
+        if ( !token) {
+          toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
+          return;
+        }
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_URL_BACKEND}/resource`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const recursos = response.data;
+        console.log("Datos recibidos:", recursos);
+
+      } catch (error) {
+        console.error("Error al obtener los recursos:", error);
+        toast.error("Error al cargar los recursos.");
+      }
+    };
+
+    fetchRecursos();
+  }, []);
+
+
   const router = useRouter();
   let EQUIPO = [
     {
-      id: 1, //cedula
       nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
+      descripcion: "lorem asd asd aasdasd asd asd as da sdsa d asd as das dasaae e ee e e e eeeee eeeee eeee eees da",
     },
     {
-      id: 2,
       nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
+      descripcion: "sprinter",
     },
     {
-      id: 3,
       nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-  ];
-  let DATOS = [
-    {
-      nombre: "Cata Preci",
-      pais: "Colombia",
+      descripcion: "sprinter",
     },
   ];
   const [formData, setFormData] = useState({
@@ -153,7 +171,7 @@ export default function InformacionEquipo() {
             </Button>
           </div>
         </div>
-        <div>
+        <div className="max-w-xl">
           <Input
             className="border-1 border-secondary rounded-default w-full mb-5"
             type="text"
@@ -166,14 +184,11 @@ export default function InformacionEquipo() {
           />
           <CardWrapper className="bg-background p-3 md:p-5 lg:p-7 rounded-default border-1 border-content1 shadow-button">
             <div className="grid grid-cols-1 gap-2">
-              {EQUIPO.map((miembro) => (
+              {EQUIPO.map((miembro, index) => (
                 <CardUser
-                  key={miembro.id} // Asegúrate de proporcionar una key única para cada elemento de la lista
+                  key={index}
                   nombre={miembro.nombre}
-                  especialidad={miembro.especialidad}
-                  tiempoAcomulado={miembro.tiempo}
-                  genero={miembro.genero}
-                  contextura={miembro.contextura}
+                  especialidad={miembro.descripcion}
                 />
               ))}
             </div>

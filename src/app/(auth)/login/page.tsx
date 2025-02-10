@@ -36,10 +36,12 @@ export default function Login() {
 				password,
 			};
 
-			await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signin`, payload); //petición post para iniciar sesión (debería funcionar xd)
+			const user=await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signin`, payload);
 
 			toast.success("Login exitoso");
-			router.push("/reserva"); 
+			router.push("/reserva");
+			localStorage.setItem("user_id", user.data.id);
+			localStorage.setItem("auth_token", user.data.token);
 		} catch (error) {
 			toast.error("Oops! Algo salió mal!");
 			console.error(error);
