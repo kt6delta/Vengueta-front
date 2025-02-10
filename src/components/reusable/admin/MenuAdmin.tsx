@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Tabs, Tab, Button, Image } from "@nextui-org/react";
 import { Icon } from '@iconify/react';
 import { useRouter } from "next/navigation";
-import { FaHouseChimney } from "react-icons/fa6";
 import { Title } from "@/components/reusable/title";
+import { AiFillSchedule } from "react-icons/ai";
 
 export const MenuAdmin = () => {
   const route = useRouter();
@@ -18,7 +18,7 @@ export const MenuAdmin = () => {
   function exit(e: any) {
     e.preventDefault();
     localStorage.clear();
-    route.push(`/login`);
+    route.push(`/`);
   }
   useEffect(() => {
     const handleResize = () => {
@@ -39,7 +39,7 @@ export const MenuAdmin = () => {
             width={100}
             height={100}
             className="rounded-none"
-          /> <Title mesage="Vegeta Proyect" className="text-center"/>
+          /> <Title mesage="Vegeta Proyect" className="text-center" />
         </div>
         <Tabs
           radius="lg"
@@ -52,27 +52,14 @@ export const MenuAdmin = () => {
         >
           <Tab
             id="menu"
-            className="h-[5vh] justify-start focus:shadow-card"
-            key="unidades"
-            title={
-              <div className="flex items-center gap-2">
-                <div id='icon'>
-                  <FaHouseChimney className="font-black w-5 h-5 md:w-10 md:h-10" />
-                </div>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Unidades</p>
-              </div>
-            }
-          ></Tab>
-          <Tab
-            id="menu"
-            key="usuarios"
+            key="reservas"
             className="h-[5vh] justify-start focus:shadow-card"
             title={
               <div className="flex items-center gap-2">
                 <div id='icon'>
-                  <Icon icon="fluent:people-team-16-filled" className="font-black w-5 h-5 md:w-10 md:h-10" />
+                  <AiFillSchedule className="font-black w-5 h-5 md:w-10 md:h-10" />
                 </div>
-                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Usuarios</p>
+                <p className="text-sm sm:text-base md:text-xl lg:text-2xl">Reservas</p>
               </div>
             }
           ></Tab>

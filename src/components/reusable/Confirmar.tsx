@@ -24,12 +24,12 @@ export default function Confirmar() {
         const token = localStorage.getItem("auth_token");
 
         if ( !token) {
-          toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
+          toast.error("No se encontró al usuario. Inicia sesión nuevamente.");
           return;
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/resource`,
+          `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resource`,
           {
             headers: {
               "Content-Type": "application/json",

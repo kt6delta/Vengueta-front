@@ -19,7 +19,7 @@ export default function Login() {
 
 	const toggleVisibility = () => setIsVisible(!isVisible); //visibilidad de contraseña
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setFormData((prevState) => ({
 			...prevState,
@@ -32,15 +32,18 @@ export default function Login() {
 		try {
 			const { email, password } = formData;
 			const payload = {
-				username: email, 
+				username: email,
 				password,
 			};
 
-			const user=await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signin`, payload);
-
+			const user = await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/signin`, payload);
 			toast.success("Login exitoso");
-			router.push("/reserva");
-			localStorage.setItem("user_id", user.data.id);
+			if (user.data.rol == "admin") {
+				router.push("/reservas");
+			} else if (user.data.rol == "usuario") {
+				router.push("/misreservas");
+			}
+			localStorage.setItem("user_id", user.data.userId);
 			localStorage.setItem("auth_token", user.data.token);
 		} catch (error) {
 			toast.error("Oops! Algo salió mal!");

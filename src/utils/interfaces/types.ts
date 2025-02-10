@@ -1,7 +1,7 @@
 
 //CardDrop
 type Todo = {
-  id: number; //cedula
+  id?: number; //cedula
   nombre: string;
   especialidad?: string;
   genero?: string;
@@ -10,6 +10,10 @@ type Todo = {
   img?: string;
 };
 
+interface DragListProps {
+  DISPONIBLES: Todo[];
+  AGREGADOS: Todo[];
+}
 
 type DraggableElementProp = {
   prefix?: string;
@@ -24,5 +28,6 @@ export enum TodosStatus {
 
 export type {
   Todo,
+  DragListProps,
   DraggableElementProp,
 }

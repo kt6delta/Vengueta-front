@@ -8,9 +8,9 @@ import React, {
 import { Draggable } from "react-beautiful-dnd";
 import { CardUser } from "@/components/reusable/user/cardUser";
 import { Todo } from "@/utils/interfaces/types";
-import { FaPencilAlt } from "react-icons/fa";
+// import { FaPencilAlt } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { MdDeleteOutline } from "react-icons/md";
+// import { MdDeleteOutline } from "react-icons/md";
 
 interface Props {
   index: number;
@@ -22,14 +22,14 @@ interface Props {
 
 export const ListItem: FC<Props> = ({ index, todo, todos, setTodos, onMontado }) => {
   const router = useRouter();
-  const handleEdit = (e: any) => {
-    console.log("edit");
-    router.push(`carrera/infoEquipo`);
-  };
+  // const handleEdit = (e: any) => {
+  //   console.log("edit");
+  //   router.push(`carrera/infoEquipo`);
+  // };
 
-  const handleDelete = (e: any) => {
-    setTodos(todos.filter((item) => item.id !== todo.id));
-  };
+  // const handleDelete = (e: any) => {
+  //   setTodos(todos.filter((item) => item.id !== todo.id));
+  // };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ export const ListItem: FC<Props> = ({ index, todo, todos, setTodos, onMontado })
   }, []);
   return (
     <>
-      <Draggable draggableId={todo.id.toString()} index={index} key={todo.id}>
+      <Draggable draggableId={index.toString()} index={index} key={index}>
         {(draggableProvided, draggableSnapshot) => (
           <form
             className="mb-3 md:mb-5 lg:mb-7 grid"
@@ -51,20 +51,17 @@ export const ListItem: FC<Props> = ({ index, todo, todos, setTodos, onMontado })
           >
             <CardUser
               nombre={todo.nombre}
-              especialidad={todo.especialidad || ""}
-              tiempoAcomulado={todo.tiempo || ""}
-              genero={todo.genero || ""}
-              contextura={todo.contextura || ""}
+              especialidad={todo.especialidad}
               img={todo.img} //random img 0-4
             />
-            <div className="flex justify-end gap-2">
+            {/* <div className="flex justify-end gap-2">
               <button type="button" onClick={handleEdit}>
                 <FaPencilAlt />
               </button>
               <button type="button" onClick={handleDelete} >
               <MdDeleteOutline className="w-6 h-6"/>
               </button>
-            </div>
+            </div> */}
           </form>
         )}
       </Draggable>

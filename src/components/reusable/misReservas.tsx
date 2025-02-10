@@ -40,7 +40,7 @@ export default function MisReservas() {
       }
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/resourcetype/${resourceTypeId}/schedule`,
+        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resourcetype/${resourceTypeId}/schedule`,
         {
           headers: {
             "Content-Type": "application/json",

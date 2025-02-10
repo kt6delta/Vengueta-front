@@ -31,7 +31,7 @@ class UsuarioUpdate implements IForm {
 
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`, // Se usa el ID en la URL
+        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/users/${userId}`, // Se usa el ID en la URL
         { username: nickname, email, rol, password },
         {
           headers: {
@@ -81,7 +81,7 @@ export default function Perfil() {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL_BACKEND}/users/${userId}`,
+          `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/users/${userId}`,
           {
             headers: {
               "Content-Type": "application/json",

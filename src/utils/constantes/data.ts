@@ -24,11 +24,3 @@ export const horas = [
   { label: "22:00", value: "22" },
   { label: "23:00", value: "23" },
 ];
-
-export const img = [
-  "https://i.pravatar.cc/150?u=a04258a2462d826712d",
-  "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-  "https://i.pravatar.cc/150?u=a04258114e29026302d",
-  "",
-  "https://i.pravatar.cc/150?u=a04258114e29026702d",
-]

@@ -1,58 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, FC } from "react";
 import { useState } from "react";
 import { DraggableElement } from "@/components/CardDrop/DraggableElement";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { Todo, TodosStatus } from "@/utils/interfaces/types";
-import { img } from "@/utils/constantes/data";
+import { Todo, TodosStatus, DragListProps } from "@/utils/interfaces/types";
 
+export const DragList: FC<DragListProps> = ({ DISPONIBLES, AGREGADOS }) => {
 
-export const DragList = () => {
-
-  let DISPONIBLES = [
-    {
-      id: 1, //cedula
-      nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-    {
-      id: 2,
-      nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-    {
-      id: 3,
-      nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-  ];
-  let AGREGADOS = [
-    {
-      id: 4,
-      nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-    {
-      id: 5,
-      nombre: "Cata Preci",
-      especialidad: "sprinter",
-      genero: "Femenino",
-      contextura: "delgada",
-      tiempo: "10",
-    },
-  ];
   const [DropID1, setDropID1] = useState(
     TodosStatus.DisponiblesTodos as string
   );
@@ -65,7 +19,7 @@ export const DragList = () => {
     if (hijosMontados === 1 || hijosMontados === 2) {
       DISPONIBLES = DISPONIBLES.map((item) => ({
         ...item,
-        img: img[Math.floor(Math.random() * img.length)],
+        img: '/avatar.png',
       }));
       setDisponiblesTodos(DISPONIBLES);
       setAgregadosTodos(AGREGADOS);

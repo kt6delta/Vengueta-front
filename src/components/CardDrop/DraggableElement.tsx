@@ -44,7 +44,7 @@ export const DraggableElement: FC<Props> = ({
                 {disponiblesTodos?.map((todo, index) => (
                   <ListItem
                     index={index}
-                    key={todo?.id}
+                    key={index}
                     todo={todo}
                     todos={disponiblesTodos}
                     setTodos={setDisponiblesTodos}
