@@ -52,6 +52,9 @@ export const ListItem: FC<Props> = ({ index, todo, todos, setTodos, onMontado })
             <CardUser
               nombre={todo.nombre}
               especialidad={todo.especialidad}
+              contextura={todo.contextura}
+              genero={todo.genero}
+              tiempoAcomulado={todo.tiempo}
               img={todo.img} //random img 0-4
             />
             {/* <div className="flex justify-end gap-2">

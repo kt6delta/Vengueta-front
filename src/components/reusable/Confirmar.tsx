@@ -16,6 +16,14 @@ import { CardUser } from "@/components/reusable/user/cardUser";
 import { horas } from "@/utils/constantes/data";
 import { IoSearch } from "react-icons/io5";
 
+
+let EQUIPO = [
+  {
+    nombre: "Cata Preci",
+    descripcion: "lorem asd asd aasdasd asd asd as da sdsa d asd as das dasaae e ee e e e eeeee eeeee eeee eees da",
+  }
+];
+
 export default function Confirmar() {
 
   useEffect(() => {
@@ -52,20 +60,7 @@ export default function Confirmar() {
 
 
   const router = useRouter();
-  let EQUIPO = [
-    {
-      nombre: "Cata Preci",
-      descripcion: "lorem asd asd aasdasd asd asd as da sdsa d asd as das dasaae e ee e e e eeeee eeeee eeee eees da",
-    },
-    {
-      nombre: "Cata Preci",
-      descripcion: "sprinter",
-    },
-    {
-      nombre: "Cata Preci",
-      descripcion: "sprinter",
-    },
-  ];
+
   const [formData, setFormData] = useState({
     date: "",
     timeStart: "",
@@ -189,6 +184,9 @@ export default function Confirmar() {
                   key={index}
                   nombre={miembro.nombre}
                   especialidad={miembro.descripcion}
+                  // {...(miembro.contextura && { contextura: miembro.contextura })}
+                  // {...(miembro.genero && { genero: miembro.genero })}
+                  // {...(miembro.tiempo && { tiempoAcomulado: miembro.tiempo })}
                 />
               ))}
             </div>
