@@ -53,8 +53,10 @@ export default function Reservas() {
 
   useEffect(() => {
     getRecursos();
+  }, [recursos]);
+  useEffect(() => {
     getUnitDisponible()
-  }, []);
+  }, [unidades]);
 
   async function CreateUnidad() {
     try {
