@@ -8,9 +8,9 @@ import { toast } from "react-toastify";
 
 type Reserva = {
   id: number;
-  dayOfWeek: string; // "jueves"
-  startTime: string; // "09:00:00"
-  endTime: string;   // "14:00:00"
+  diaSemana: string; // "jueves"
+  horaInicio: string; // "09:00:00"
+  horaFin: string;   // "14:00:00"
 };
 
 export default function MisReservas() {
@@ -82,12 +82,12 @@ export default function MisReservas() {
   // reservas activas: mayor o igual que el día actual
   // reservas vencidas: menor que el día actual
   const reservasActivas = reservas.filter((reserva) => {
-    const dayReserva = dayMapping[reserva.dayOfWeek.toLowerCase()];
+    const dayReserva = dayMapping[reserva.diaSemana.toLowerCase()];
     return dayReserva >= todayNumber;
   });
 
   const reservasVencidas = reservas.filter((reserva) => {
-    const dayReserva = dayMapping[reserva.dayOfWeek.toLowerCase()];
+    const dayReserva = dayMapping[reserva.diaSemana.toLowerCase()];
     return dayReserva < todayNumber;
   });
 
@@ -105,8 +105,8 @@ export default function MisReservas() {
                   <div key={reserva.id} className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg">
                     <span className="bg-blue-900 text-white p-2 rounded-full">👤</span>
                     <div>
-                      <p className="font-semibold">{`Día: ${reserva.dayOfWeek}`}</p>
-                      <p className="text-sm text-gray-600">{`${reserva.startTime} - ${reserva.endTime}`}</p>
+                      <p className="font-semibold">{`Día: ${reserva.diaSemana}`}</p>
+                      <p className="text-sm text-gray-600">{`${reserva.horaInicio} - ${reserva.horaFin}`}</p>
                     </div>
                   </div>
                 ))
@@ -124,8 +124,8 @@ export default function MisReservas() {
                   <div key={reserva.id} className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg">
                     <span className="bg-blue-900 text-white p-2 rounded-full">👤</span>
                     <div>
-                      <p className="font-semibold">{`Día: ${reserva.dayOfWeek}`}</p>
-                      <p className="text-sm text-gray-600">{`${reserva.startTime} - ${reserva.endTime}`}</p>
+                      <p className="font-semibold">{`Día: ${reserva.diaSemana}`}</p>
+                      <p className="text-sm text-gray-600">{`${reserva.horaInicio} - ${reserva.horaFin}`}</p>
                     </div>
                   </div>
                 ))

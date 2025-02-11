@@ -22,7 +22,7 @@ export const Header = () => {
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu aria-label="Static Actions" >
-                            <DropdownItem key="reserva" href="/reserva" >Inicio</DropdownItem>
+                            <DropdownItem key="reserva" href="/misreservas" >Inicio</DropdownItem>
                             <DropdownItem key="perfil" href="/login">Perfil</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>

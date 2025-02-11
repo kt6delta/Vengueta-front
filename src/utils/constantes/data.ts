@@ -26,10 +26,20 @@ export const horas = [
 ];
 
 
-export const resourceTypeID=[
-{ label: "Laboratorio", value: 3 },
+export const resourceTypeID = [
+  { label: "Laboratorio", value: 3 },
 ]
 
-export const serviceUnitID=[
+export const serviceUnitID = [
   { label: "Holi", value: 1 },
-  ]
+]
+
+export const daysOfWeek = [
+  { value: 1, label: "lunes"},
+  { value: 2, label: "martes" },
+  { value: 3, label: "miércoles"},
+  { value: 4, label: "jueves"},
+  { value: 5, label: "viernes"},
+  { value: 6, label: "sábado"},
+  { value: 7, label: "domingo"},
+];
