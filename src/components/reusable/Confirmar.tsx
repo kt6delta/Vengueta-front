@@ -33,14 +33,14 @@ export default function Confirmar() {
 
   async function Reservar() {
     try {
-      const userId = localStorage.getItem("user_id");
+      // const userId = localStorage.getItem("user_id");
       const token = localStorage.getItem("auth_token");
 
-      if (!userId || !token) {
+      if ( !token) {
         toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
         return;
       }
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resourcetype/${userId}/schedule`,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resourcetype/1/schedule`,
         formData,
         {
           headers: {
@@ -49,14 +49,12 @@ export default function Confirmar() {
           },
         }
       );
-      if (response.status == 200) {
+      if (response.status == 201) {
         toast.success("Reservado con exito");
-        router.back()
+        router.push('/misreservas')
       }
-      return "";
     } catch (error) {
       toast.error("Oops! Error en la creación de la unidad");
-      return "";
     }
   }
   return (

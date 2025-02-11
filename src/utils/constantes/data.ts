@@ -27,11 +27,15 @@ export const horas = [
 
 
 export const resourceTypeID = [
+  { label: "Aula Grande", value: 1 },
+  { label: "Proyector Sala", value: 2 },
   { label: "Laboratorio", value: 3 },
 ]
 
 export const serviceUnitID = [
-  { label: "Holi", value: 1 },
+  { label: "1", value: 1 },
+  { label: "2", value: 2 },
+  { label: "3", value: 3 },
 ]
 
 export const daysOfWeek = [
