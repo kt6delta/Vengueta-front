@@ -13,10 +13,18 @@ type Reserva = {
   horaFin: string;   // "14:00:00"
 };
 
+type Recurso = {
+  id_recurso: string;
+  nombre: string;
+  tipo_recurso: string;
+  horario_disponibilidad: string[];
+};
+
 export default function MisReservas() {
   const router = useRouter();
   const [reservas, setReservas] = useState<Reserva[]>([]);
-
+  const [recursosRailWay, setRecursosRailWay] = useState<Recurso[]>([]);
+  const [recursosRender, setRecursosRender] = useState<Recurso[]>([]);
     // prueba para ver la lógica
     // const testData: Reserva[] = [
     //   { id: 1, dayOfWeek: "lunes", startTime: "09:00:00", endTime: "10:00:00" },
@@ -27,6 +35,41 @@ export default function MisReservas() {
     //   { id: 6, dayOfWeek: "sábado", startTime: "14:00:00", endTime: "15:00:00" },
     //   { id: 7, dayOfWeek: "domingo", startTime: "15:00:00", endTime: "16:00:00" },
     // ];
+
+
+
+  // Función para obtener datos del primer proveedor (Railway)
+  const fetchRecursosRailway = async () => {
+    try {
+      const response = await fetch(
+        "https://progranovaintegraserviciosback-production.up.railway.app/integraservicios/api/external?id=1"
+      );
+      const data = await response.json();
+      console.log(data)
+      setRecursosRailWay(data["data"]["recursos_disponibles"]);
+    } catch (error) {
+      console.error("Error en la primera URL (Railway):", error);
+    }
+  };
+
+  // Función para obtener datos del segundo proveedor (Render)
+  const fetchRecursosRender = async () => {
+    try {
+      const response = await fetch(
+        "https://backend-integraservicios.onrender.com/api/recursosDisponibles"
+      );
+      const data = await response.json();
+      console.log(data)
+      setRecursosRender(data["recursos_disponibles"]);
+    } catch (error) {
+      console.error("Error en la segunda URL (Render):", error);
+      setRecursosRender([])
+    }
+  };
+
+
+
+
   
 
   const fetchReservas = async () => {
@@ -58,7 +101,13 @@ export default function MisReservas() {
 
   useEffect(() => {
     fetchReservas();
+    fetchRecursosRailway();
+    fetchRecursosRender();
   }, []);
+
+  const goToWeb = (url: string) => {
+    window.open(url, "_blank"); // Abre la URL en una nueva pestaña
+  };
 
   const handleReservar = () => {
     router.push("/confirmar");
@@ -92,7 +141,8 @@ export default function MisReservas() {
   });
 
   return (
-    <div className="flex items-center justify-center bg-white p-1">
+    <div className="col">
+      <div className="flex items-center justify-center bg-white p-1">
       <div className="flex flex-col w-full max-w-5xl min-w-[400px] gap-3 mx-5">
         <Title className="text-center text-2xl font-bold mb-2" mesage="RESERVAS" />
 
@@ -154,6 +204,45 @@ export default function MisReservas() {
           </Button>
         </div>
       </div>
+      
+      
     </div>
+    <Title className="text-center text-2xl font-bold mb-2" mesage="Otros recursos" />
+      <div>
+        {recursosRailWay.map((reserva) => (
+                
+                  <div className="col-md" onClick={() => goToWeb("https://www.youtube.com/watch?v=dQw4w9WgXcQ")}>
+                    <br></br>
+                      <div key={reserva.id_recurso} className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg">
+                      <span className="bg-blue-900 text-white p-2 rounded-full">👤</span>
+                      <div>
+                        <h2>{reserva.nombre}</h2>
+                        <p className="font-semibold">{`Descripciòn: ${reserva.tipo_recurso}`}</p>
+                        {reserva.horario_disponibilidad.map((horario) => (<p className="text-sm"> {horario} </p>))}
+                      </div>
+                    </div>
+                  </div>
+                    
+        ))}
+      
+      {recursosRender.map((reserva) => (
+                
+                <div className="col-md"  onClick={() => goToWeb("https://www.youtube.com/watch?v=dQw4w9WgXcQ")}>
+                  <br></br>
+                    <div key={reserva.id_recurso} className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg">
+                    <span className="bg-blue-900 text-white p-2 rounded-full">👤</span>
+                    <div>
+                      <h2>{reserva.nombre}</h2>
+                      <p className="font-semibold">{`Descripciòn: ${reserva.tipo_recurso}`}</p>
+                      {reserva.horario_disponibilidad.map((horario) => (<p className="text-sm"> {horario} </p>))}
+                    </div>
+                  </div>
+                </div>
+                  
+      ))}
+    
+      </div>
+    </div>
+    
   );
 }
