@@ -111,7 +111,7 @@ export default function Confirmar() {
       }
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resource/6/book`,
+        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resource/${selectedResourceId}/book`,
         formattedData,
         {
           headers: {
@@ -126,7 +126,7 @@ export default function Confirmar() {
         router.push("/misreservas");
       }
     } catch (error) {
-      toast.error("Oops! Error en la creación de la unidad");
+      toast.error("Oops! Error en la reservacion"+ error);
     }
   }
 
