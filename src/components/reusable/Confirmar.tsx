@@ -4,19 +4,30 @@ import { toast } from "react-toastify";
 import React, { useState, useEffect } from "react";
 import { Title } from "@/components/reusable/title";
 import { CardWrapper } from "@/components/reusable/CardWrapper";
-import { Button } from "@nextui-org/react";
+import { Button, DateInput, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { horas, daysOfWeek } from "@/utils/constantes/data";
+import { horas } from "@/utils/constantes/data";
+import { CalendarDate } from "@internationalized/date";
 
+
+const today = new CalendarDate(
+  new Date().getFullYear(),
+  new Date().getMonth() + 1, // Los meses en JavaScript son base 0
+  new Date().getDate()
+);
+function ChangeDate(value: any) {
+  return value.year.toString().padStart(2, '0') + '-' + value.month.toString().padStart(2, '0') + '-' + value.day.toString().padStart(2, '0')
+}
 export default function Confirmar() {
   const router = useRouter();
 
   const [selectedResourceId, setSelectedResourceId] = useState<string>("");
 
   const [formData, setFormData] = useState({
-    dayOfWeek: "",
-    startTime: "",
-    endTime: ""
+    userId: Number(localStorage.getItem('user_id')),
+    date: today,
+    start: "",
+    end: ""
   });
 
   // almacena el arreglo de la API
@@ -61,9 +72,10 @@ export default function Confirmar() {
   }
 
   function handleChange(
-    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    e: any
   ) {
     const { name, value } = e.target;
+    console.log(name, value)
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -77,16 +89,10 @@ export default function Confirmar() {
   }
 
   async function Reservar(e: React.FormEvent) {
-    e.preventDefault(); 
-
-    // Formatear las horas al formato necesario antes de enviar la solicitud
-    const formattedStartTime = formatTimeToHHMMSS(formData.startTime);
-    const formattedEndTime = formatTimeToHHMMSS(formData.endTime);
-
+    e.preventDefault();
     const formattedData = {
       ...formData,
-      startTime: formattedStartTime,
-      endTime: formattedEndTime,
+      date: ChangeDate(formData.date)
     };
 
     console.log("Contenido de formData:", formattedData);  // Imprime el contenido de formData antes de la solicitud
@@ -98,14 +104,14 @@ export default function Confirmar() {
 
     try {
       const token = localStorage.getItem("auth_token");
-
-      if (!token) {
+      const userId=localStorage.getItem('user_id')
+      if (!userId || !token) {
         toast.error("No se encontró la información del usuario. Inicia sesión nuevamente.");
         return;
       }
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resourcetype/${selectedResourceId}/schedule`,
+        `${process.env.NEXT_PUBLIC_API_URL_BACKEND}/resource/${selectedResourceId}/book`,
         formattedData,
         {
           headers: {
@@ -120,7 +126,7 @@ export default function Confirmar() {
         router.push("/misreservas");
       }
     } catch (error) {
-      toast.error("Oops! Error en la creación de la unidad");
+      toast.error("Oops! Error en la reservacion"+ error);
     }
   }
 
@@ -141,7 +147,7 @@ export default function Confirmar() {
                   <select
                     id="resourceId"
                     value={selectedResourceId}
-                    onChange={handleResourceSelect} 
+                    onChange={handleResourceSelect}
                     className="w-full border-b-2 border-secondary bg-transparent focus:outline-none"
                     required
                   >
@@ -154,68 +160,68 @@ export default function Confirmar() {
                   </select>
                 </div>
 
-                <div>
-                  <label htmlFor="dayOfWeek" className="font-bold">
-                    Fecha de reserva
-                  </label>
-                  <select
-                    id="dayOfWeek"
-                    name="dayOfWeek"
-                    value={formData.dayOfWeek}
-                    onChange={handleChange}
-                    className="w-full border-b-2 border-secondary bg-transparent focus:outline-none"
-                    required
-                  >
-                    <option value="">Seleccionar Día</option>
-                    {daysOfWeek.map((option) => (
-                      <option key={option.value} value={option.label}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <DateInput
+                  isRequired={true}
+                  variant="underlined"
+                  label="Fecha de Reserva"
+                  name="date"
+                  value={formData.date}
+                  onChange={(value) => handleChange({ target: { name: 'date', value } })}
+                  classNames={{
+                    base: "font-bold",
+                  }}
+                />
 
-                <div>
-                  <label htmlFor="startTime" className="font-bold">
-                    Hora de Inicio
-                  </label>
-                  <select
-                    id="startTime"
-                    name="startTime"
-                    value={formData.startTime}
-                    onChange={handleChange}
-                    className="w-full border-b-2 border-secondary bg-transparent focus:outline-none"
-                    required
-                  >
-                    <option value="">Seleccionar Hora</option>
-                    {horas.map((option) => (
-                      <option key={option.value} value={option.label}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="endTime" className="font-bold">
-                    Hora de Finalización
-                  </label>
-                  <select
-                    id="endTime"
-                    name="endTime"
-                    value={formData.endTime}
-                    onChange={handleChange}
-                    className="w-full border-b-2 border-secondary bg-transparent focus:outline-none"
-                    required
-                  >
-                    <option value="">Seleccionar Hora</option>
-                    {horas.map((option) => (
-                      <option key={option.value} value={option.label}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <Autocomplete
+                  isRequired={true}
+                  label="Hora de Inicio"
+                  color="secondary"
+                  variant="underlined"
+                  size="md"
+                  radius="md"
+                  placeholder="Seleccionar Hora"
+                  onSelectionChange={(value) => handleChange({ target: { name: 'start', value } })}
+                  classNames={{
+                    base: "font-bold",
+                  }}
+                >
+                  {horas.map((option) => (
+                    <AutocompleteItem
+                      key={option.value}
+                      value={option.label}
+                      classNames={{
+                        selectedIcon: "text-secondary",
+                      }}
+                    >
+                      {option.label}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+                <Autocomplete
+                  isRequired={true}
+                  label="Hora de Finalización"
+                  color="secondary"
+                  variant="underlined"
+                  size="md"
+                  radius="md"
+                  placeholder="Seleccionar hora"
+                  onSelectionChange={(value) => handleChange({ target: { name: 'end', value } })}
+                  classNames={{
+                    base: "font-bold",
+                  }}
+                >
+                  {horas.map((option) => (
+                    <AutocompleteItem
+                      key={option.value}
+                      value={option.label}
+                      classNames={{
+                        selectedIcon: "text-secondary",
+                      }}
+                    >
+                      {option.label}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
               </div>
             </CardWrapper>
           </div>
@@ -223,10 +229,10 @@ export default function Confirmar() {
             <Button
               color="secondary"
               variant="solid"
-              type="button"  
+              type="button"
               radius="full"
               className="w-1/3 min-w-32 mb-2 bg-secondary text-white"
-              onClick={Reservar} 
+              onClick={Reservar}
             >
               Reservar
             </Button>
